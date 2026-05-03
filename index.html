@@ -1,11 +1,2701 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body style="font-family: Arial, Helvetica, sans-serif">
-    <h1>Hello world</h1>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Reference Playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ─── RESET & ROOT ─────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0d0f14;
+    --bg2:       #131620;
+    --bg3:       #1a1e2e;
+    --border:    #252a3a;
+    --border2:   #2e3450;
+    --text:      #c8cfe8;
+    --muted:     #5a6380;
+    --accent:    #5ee7b7;
+    --accent2:   #7b8cde;
+    --accent3:   #f7b267;
+    --red:       #f07070;
+    --code-bg:   #090b10;
+    --tag:       #7b8cde;
+    --attr:      #5ee7b7;
+    --val:       #f7b267;
+    --nav-w:     230px;
+    --radius:    8px;
+    --mono:      'JetBrains Mono', monospace;
+    --sans:      'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    display: flex;
+  }
+
+  /* ─── SIDEBAR NAV ──────────────────────────────────── */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--nav-w);
+    height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .nav-brand {
+    padding: 20px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-brand h1 {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .nav-brand p {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+    letter-spacing: 0.03em;
+  }
+
+  .nav-group {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-group-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 4px 18px 6px;
+  }
+
+  .nav-group a {
+    display: block;
+    padding: 5px 18px 5px 28px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 12px;
+    opacity: 0.7;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    position: relative;
+  }
+
+  .nav-group a::before {
+    content: '›';
+    position: absolute;
+    left: 16px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .nav-group a:hover, .nav-group a.active {
+    opacity: 1;
+    color: var(--accent);
+    background: rgba(94,231,183,0.06);
+    border-left-color: var(--accent);
+  }
+
+  /* ─── MAIN CONTENT ─────────────────────────────────── */
+  #main {
+    margin-left: var(--nav-w);
+    flex: 1;
+    max-width: calc(100% - var(--nav-w));
+    padding: 32px 36px 80px;
+  }
+
+  /* ─── PAGE HEADER ──────────────────────────────────── */
+  .page-header {
+    margin-bottom: 48px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    font-family: var(--sans);
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+
+  .page-header p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  /* ─── SECTIONS ─────────────────────────────────────── */
+  .section {
+    margin-bottom: 64px;
+  }
+
+  .section-title {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  /* ─── CARD GRID ────────────────────────────────────── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .card-grid.wide {
+    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  }
+
+  .card-grid.full {
+    grid-template-columns: 1fr;
+  }
+
+  /* ─── SNIPPET CARD ─────────────────────────────────── */
+  .snippet {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .snippet:hover {
+    border-color: var(--border2);
+  }
+
+  .snippet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px;
+    background: var(--code-bg);
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+
+  .snippet-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex: 1;
+  }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  .copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .copy-btn.copied {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(94,231,183,0.1);
+  }
+
+  .snippet-code {
+    padding: 14px 16px;
+    background: var(--code-bg);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  .snippet-code::-webkit-scrollbar { height: 3px; }
+  .snippet-code::-webkit-scrollbar-thumb { background: var(--border2); }
+
+  /* Syntax highlight colors */
+  .snippet-code .t { color: var(--tag); }      /* tag */
+  .snippet-code .a { color: var(--attr); }     /* attr */
+  .snippet-code .v { color: var(--val); }      /* value */
+  .snippet-code .c { color: var(--muted); font-style: italic; } /* comment */
+  .snippet-code .s { color: var(--red); }      /* string content */
+
+  .snippet-result {
+    padding: 16px;
+    background: var(--bg3);
+  }
+
+  .result-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .result-label::before {
+    content: '';
+    width: 16px; height: 1px;
+    background: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* ─── RESULT ZONE STYLES (reset from base) ─────────── */
+  .result h1 { font-family: serif; font-size: 2em; color: var(--text); }
+  .result h2 { font-family: serif; font-size: 1.5em; color: var(--text); }
+  .result h3 { font-family: serif; font-size: 1.25em; color: var(--text); }
+  .result h4 { font-family: serif; font-size: 1em; color: var(--text); font-weight: bold; }
+  .result h5 { font-family: serif; font-size: 0.875em; color: var(--text); }
+  .result h6 { font-family: serif; font-size: 0.8em; color: var(--text); }
+  .result p  { font-family: sans-serif; color: var(--text); font-size: 14px; margin-bottom: 6px; }
+  .result a  { color: var(--accent2); }
+  .result strong { color: #fff; }
+  .result em { font-style: italic; color: var(--accent3); }
+  .result mark { background: #f7b26740; color: var(--accent3); padding: 0 3px; border-radius: 3px; }
+  .result code { background: var(--code-bg); color: var(--accent); font-family: var(--mono); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  .result pre  { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 12px; overflow-x: auto; }
+  .result blockquote { border-left: 3px solid var(--accent2); padding-left: 12px; color: var(--muted); font-style: italic; }
+  .result hr { border: none; border-top: 1px solid var(--border2); margin: 8px 0; }
+  .result ul { list-style: disc; padding-left: 20px; font-family: sans-serif; color: var(--text); font-size: 13px; }
+  .result ol { list-style: decimal; padding-left: 20px; font-family: sans-serif; color: var(--text); font-size: 13px; }
+  .result dl dt { font-weight: bold; color: var(--accent3); font-family: sans-serif; font-size: 13px; }
+  .result dl dd { padding-left: 14px; color: var(--text); font-family: sans-serif; font-size: 13px; }
+  .result table { border-collapse: collapse; width: 100%; font-family: sans-serif; font-size: 13px; }
+  .result table th { background: var(--bg2); color: var(--accent); padding: 6px 10px; border: 1px solid var(--border2); text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .result table td { padding: 6px 10px; border: 1px solid var(--border); color: var(--text); }
+  .result table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .result input, .result select, .result textarea {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .result input:focus, .result select:focus, .result textarea:focus {
+    border-color: var(--accent);
+  }
+  .result label { font-family: sans-serif; font-size: 12px; color: var(--text); }
+  .result button {
+    background: var(--accent);
+    color: #0d0f14;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .result button:hover { opacity: 0.85; }
+  .result fieldset { border: 1px solid var(--border2); border-radius: 6px; padding: 10px 14px; }
+  .result legend { color: var(--accent3); font-size: 12px; padding: 0 4px; font-family: sans-serif; }
+  .result details { font-family: sans-serif; font-size: 13px; color: var(--text); }
+  .result summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+  .result meter, .result progress { width: 100%; height: 10px; border-radius: 5px; }
+  .result figure { display: inline-block; }
+  .result figcaption { font-size: 11px; color: var(--muted); text-align: center; margin-top: 4px; font-family: sans-serif; }
+  .result abbr { text-decoration: underline dotted; cursor: help; color: var(--accent3); }
+  .result sub, .result sup { font-size: 10px; }
+  .result kbd { background: var(--bg); border: 1px solid var(--border2); border-radius: 3px; padding: 1px 5px; font-size: 11px; font-family: var(--mono); color: var(--text); box-shadow: 0 1px 0 var(--border2); }
+  .result samp { font-family: var(--mono); color: var(--accent3); font-size: 12px; }
+  .result var { font-style: italic; color: var(--red); }
+  .result del { text-decoration: line-through; color: var(--red); opacity: 0.7; }
+  .result ins { text-decoration: underline; color: var(--accent); }
+  .result small { font-size: 11px; color: var(--muted); }
+  .result dfn { font-style: italic; font-weight: bold; border-bottom: 1px dotted var(--muted); }
+  .result cite { font-style: italic; color: var(--muted); }
+  .result address { font-style: italic; color: var(--muted); font-family: sans-serif; font-size: 13px; }
+  .result time { color: var(--accent3); font-family: var(--mono); font-size: 12px; }
+  .result img { max-width: 100%; border-radius: 6px; }
+
+  /* ─── UI COMPONENT DEMO STYLES ─────────────────────── */
+  .demo-nav {
+    display: flex;
+    align-items: center;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 14px;
+    gap: 4px;
+    height: 46px;
+  }
+
+  .demo-nav .brand {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    margin-right: 12px;
+  }
+
+  .demo-nav a {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+
+  .demo-nav a:hover, .demo-nav a.active {
+    color: var(--text);
+    background: var(--bg3);
+  }
+
+  .demo-nav .spacer { flex: 1; }
+
+  .demo-nav .cta {
+    background: var(--accent);
+    color: #0d0f14 !important;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 5px;
+  }
+
+  /* Card component */
+  .demo-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: sans-serif;
+    max-width: 260px;
+  }
+
+  .demo-card .card-img {
+    width: 100%;
+    height: 110px;
+    background: linear-gradient(135deg, #1a2545, #0d1f3c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .demo-card .card-body {
+    padding: 14px;
+  }
+
+  .demo-card .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .demo-card .card-text {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .demo-card .card-footer {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn { display: inline-block; padding: 6px 14px; border-radius: 5px; font-family: var(--mono); font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; text-decoration: none; }
+  .btn-primary { background: var(--accent); color: #0d0f14; }
+  .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--accent); }
+  .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+  .btn-lg { padding: 10px 22px; font-size: 14px; }
+
+  /* Badge */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--mono); }
+  .badge-green  { background: rgba(94,231,183,0.15); color: var(--accent); }
+  .badge-blue   { background: rgba(123,140,222,0.15); color: var(--accent2); }
+  .badge-orange { background: rgba(247,178,103,0.15); color: var(--accent3); }
+  .badge-red    { background: rgba(240,112,112,0.15); color: var(--red); }
+
+  /* Panel */
+  .demo-panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: sans-serif;
+  }
+
+  .demo-panel .panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .demo-panel .panel-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .demo-panel .panel-body {
+    padding: 14px 16px;
+  }
+
+  .demo-panel .panel-footer {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  /* Alert */
+  .alert { padding: 10px 14px; border-radius: 7px; font-family: sans-serif; font-size: 13px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .alert-info    { background: rgba(123,140,222,0.1); border: 1px solid rgba(123,140,222,0.3); color: var(--accent2); }
+  .alert-success { background: rgba(94,231,183,0.1); border: 1px solid rgba(94,231,183,0.3); color: var(--accent); }
+  .alert-warn    { background: rgba(247,178,103,0.1); border: 1px solid rgba(247,178,103,0.3); color: var(--accent3); }
+  .alert-error   { background: rgba(240,112,112,0.1); border: 1px solid rgba(240,112,112,0.3); color: var(--red); }
+
+  /* Avatar */
+  .avatar { width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; font-family: var(--sans); }
+  .avatar-group { display: flex; }
+  .avatar-group .avatar { margin-left: -8px; border: 2px solid var(--bg3); }
+  .avatar-group .avatar:first-child { margin-left: 0; }
+
+  /* Stat card */
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-family: sans-serif; }
+  .stat-card .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-card .stat-value { font-family: var(--sans); font-size: 28px; font-weight: 800; color: var(--text); }
+  .stat-card .stat-change { font-size: 11px; margin-top: 4px; }
+  .stat-card .stat-change.up   { color: var(--accent); }
+  .stat-card .stat-change.down { color: var(--red); }
+
+  /* Tabs */
+  .tabs { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-family: sans-serif; }
+  .tab-bar { display: flex; background: var(--code-bg); border-bottom: 1px solid var(--border); }
+  .tab-bar button { padding: 9px 16px; background: none; border: none; color: var(--muted); font-family: var(--mono); font-size: 12px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .tab-bar button.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { padding: 14px; background: var(--bg3); font-size: 13px; color: var(--text); }
+
+  /* Progress bar */
+  .progress-bar { background: var(--bg); border-radius: 10px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+  .progress-bar .fill { height: 100%; border-radius: 10px; transition: width 0.4s ease; }
+
+  /* Toggle / Switch */
+  .toggle-wrap { display: flex; align-items: center; gap: 10px; font-family: sans-serif; font-size: 13px; color: var(--text); }
+  .toggle { position: relative; width: 40px; height: 22px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-track { position: absolute; inset: 0; background: var(--border2); border-radius: 22px; cursor: pointer; transition: background 0.2s; }
+  .toggle-track::after { content: ''; position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
+  .toggle input:checked + .toggle-track { background: var(--accent); }
+  .toggle input:checked + .toggle-track::after { transform: translateX(18px); }
+
+  /* ─── SCROLLBAR GLOBAL ──────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  /* ─── SEARCH BAR ────────────────────────────────────── */
+  .search-wrap {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-wrap input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-family: var(--mono);
+    font-size: 11px;
+    outline: none;
+  }
+
+  .search-wrap input:focus {
+    border-color: var(--accent);
+  }
+
+  /* ─── TOC COUNTER ───────────────────────────────────── */
+  .count-badge {
+    background: var(--bg3);
+    color: var(--muted);
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-left: auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+════════════════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="nav-brand">
+    <h1>HTML Playground</h1>
+    <p>code → live result</p>
+  </div>
+
+  <div class="search-wrap">
+    <input type="search" id="navSearch" placeholder="Filter sections…" oninput="filterNav(this.value)">
+  </div>
+
+  <div id="navGroups">
+    <div class="nav-group" data-group="basics">
+      <div class="nav-group-label">Basics</div>
+      <a href="#headings">Headings</a>
+      <a href="#text">Text & Inline</a>
+      <a href="#links">Links</a>
+      <a href="#lists">Lists</a>
+      <a href="#blockquote">Blockquote</a>
+      <a href="#code">Code & Pre</a>
+      <a href="#table">Tables</a>
+      <a href="#hr">Dividers & HR</a>
+    </div>
+    <div class="nav-group" data-group="layout">
+      <div class="nav-group-label">Layout</div>
+      <a href="#layout-tags">Semantic Tags</a>
+      <a href="#div-span">Div & Span</a>
+      <a href="#details">Details / Summary</a>
+      <a href="#figure">Figure</a>
+    </div>
+    <div class="nav-group" data-group="forms">
+      <div class="nav-group-label">Forms</div>
+      <a href="#text-inputs">Text Inputs</a>
+      <a href="#select">Select & Datalist</a>
+      <a href="#checkradio">Checkbox & Radio</a>
+      <a href="#range-color">Range, Color, File</a>
+      <a href="#date-time">Date & Time</a>
+      <a href="#textarea">Textarea</a>
+      <a href="#fieldset">Fieldset & Legend</a>
+      <a href="#buttons">Buttons</a>
+      <a href="#progress">Progress & Meter</a>
+    </div>
+    <div class="nav-group" data-group="media">
+      <div class="nav-group-label">Media</div>
+      <a href="#images">Images</a>
+      <a href="#audio">Audio</a>
+      <a href="#video">Video</a>
+      <a href="#iframe">iFrame</a>
+      <a href="#canvas">Canvas</a>
+      <a href="#svg-inline">SVG Inline</a>
+    </div>
+    <div class="nav-group" data-group="advanced">
+      <div class="nav-group-label">Advanced</div>
+      <a href="#meta">Meta Tags</a>
+      <a href="#accessibility">Accessibility</a>
+      <a href="#data-attrs">Data Attributes</a>
+      <a href="#template">Template</a>
+      <a href="#dialog">Dialog</a>
+    </div>
+    <div class="nav-group" data-group="ui">
+      <div class="nav-group-label">UI Components</div>
+      <a href="#ui-buttons">Buttons</a>
+      <a href="#ui-inputs">Input Fields</a>
+      <a href="#ui-cards">Cards</a>
+      <a href="#ui-alerts">Alerts</a>
+      <a href="#ui-badges">Badges & Avatars</a>
+      <a href="#ui-nav">Navigation Bar</a>
+      <a href="#ui-panel">Panels</a>
+      <a href="#ui-tabs">Tabs</a>
+      <a href="#ui-progress">Progress Bars</a>
+      <a href="#ui-toggle">Toggles</a>
+      <a href="#ui-stats">Stat Cards</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════════════ -->
+<main id="main">
+
+  <div class="page-header">
+    <h1>HTML Reference Playground</h1>
+    <p>Every tag. Live result. No fluff.</p>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: HEADINGS                                  -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="headings">
+    <div class="section-title"><span class="dot"></span> Headings</div>
+    <div class="card-grid wide">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">h1–h6</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;h1&gt;</span>Heading 1<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;h2&gt;</span>Heading 2<span class="t">&lt;/h2&gt;</span>
+<span class="t">&lt;h3&gt;</span>Heading 3<span class="t">&lt;/h3&gt;</span>
+<span class="t">&lt;h4&gt;</span>Heading 4<span class="t">&lt;/h4&gt;</span>
+<span class="t">&lt;h5&gt;</span>Heading 5<span class="t">&lt;/h5&gt;</span>
+<span class="t">&lt;h6&gt;</span>Heading 6<span class="t">&lt;/h6&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <h1>Heading 1</h1>
+            <h2>Heading 2</h2>
+            <h3>Heading 3</h3>
+            <h4>Heading 4</h4>
+            <h5>Heading 5</h5>
+            <h6>Heading 6</h6>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: TEXT & INLINE                             -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="text">
+    <div class="section-title"><span class="dot"></span> Text &amp; Inline</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">p, strong, em</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;p&gt;</span>Normal paragraph text.<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;strong&gt;</span>Bold text<span class="t">&lt;/strong&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;em&gt;</span>Italic text<span class="t">&lt;/em&gt;</span><span class="t">&lt;/p&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <p>Normal paragraph text.</p>
+            <p><strong>Bold text</strong></p>
+            <p><em>Italic text</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">mark, del, ins, small</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;p&gt;</span><span class="t">&lt;mark&gt;</span>Highlighted<span class="t">&lt;/mark&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;del&gt;</span>Deleted text<span class="t">&lt;/del&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;ins&gt;</span>Inserted text<span class="t">&lt;/ins&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;small&gt;</span>Fine print<span class="t">&lt;/small&gt;</span><span class="t">&lt;/p&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <p><mark>Highlighted</mark></p>
+            <p><del>Deleted text</del></p>
+            <p><ins>Inserted text</ins></p>
+            <p><small>Fine print</small></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">sub, sup, abbr, dfn</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;p&gt;</span>H<span class="t">&lt;sub&gt;</span>2<span class="t">&lt;/sub&gt;</span>O<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span>E=mc<span class="t">&lt;sup&gt;</span>2<span class="t">&lt;/sup&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;abbr </span><span class="a">title=</span><span class="v">"HyperText Markup"</span><span class="t">&gt;</span>HTML<span class="t">&lt;/abbr&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;dfn&gt;</span>API<span class="t">&lt;/dfn&gt;</span> — hover abbr<span class="t">&lt;/p&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <p>H<sub>2</sub>O</p>
+            <p>E=mc<sup>2</sup></p>
+            <p><abbr title="HyperText Markup">HTML</abbr></p>
+            <p><dfn>API</dfn> — hover abbr</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">kbd, samp, var, cite</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;p&gt;</span>Press <span class="t">&lt;kbd&gt;</span>Ctrl+S<span class="t">&lt;/kbd&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;samp&gt;</span>Error: null ref<span class="t">&lt;/samp&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span>Solve for <span class="t">&lt;var&gt;</span>x<span class="t">&lt;/var&gt;</span><span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;p&gt;</span><span class="t">&lt;cite&gt;</span>The Art of War<span class="t">&lt;/cite&gt;</span><span class="t">&lt;/p&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <p>Press <kbd>Ctrl+S</kbd></p>
+            <p><samp>Error: null ref</samp></p>
+            <p>Solve for <var>x</var></p>
+            <p><cite>The Art of War</cite></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">address, time, span</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;address&gt;</span>
+  Cairo, Egypt
+<span class="t">&lt;/address&gt;</span>
+<span class="t">&lt;time </span><span class="a">datetime=</span><span class="v">"2024-01-01"</span><span class="t">&gt;</span>Jan 1, 2024<span class="t">&lt;/time&gt;</span>
+<span class="t">&lt;span&gt;</span>Inline wrapper<span class="t">&lt;/span&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <address>Cairo, Egypt</address>
+            <time datetime="2024-01-01">Jan 1, 2024</time><br>
+            <span>Inline wrapper</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: LINKS                                     -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="links">
+    <div class="section-title"><span class="dot"></span> Links</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">anchor variants</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;a </span><span class="a">href=</span><span class="v">"https://example.com"</span><span class="t">&gt;</span>External<span class="t">&lt;/a&gt;</span>
+<span class="t">&lt;a </span><span class="a">href=</span><span class="v">"#headings"</span><span class="t">&gt;</span>Anchor link<span class="t">&lt;/a&gt;</span>
+<span class="t">&lt;a </span><span class="a">href=</span><span class="v">"mailto:hi@site.com"</span><span class="t">&gt;</span>Email<span class="t">&lt;/a&gt;</span>
+<span class="t">&lt;a </span><span class="a">href=</span><span class="v">"tel:+1234567"</span><span class="t">&gt;</span>Phone<span class="t">&lt;/a&gt;</span>
+<span class="t">&lt;a </span><span class="a">href=</span><span class="v">"file.pdf"</span> <span class="a">download</span><span class="t">&gt;</span>Download<span class="t">&lt;/a&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:4px">
+            <a href="https://example.com" target="_blank">External</a>
+            <a href="#headings">Anchor link</a>
+            <a href="mailto:hi@site.com">Email</a>
+            <a href="tel:+1234567">Phone</a>
+            <a href="#">Download</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: LISTS                                     -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="lists">
+    <div class="section-title"><span class="dot"></span> Lists</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">ul — unordered</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;ul&gt;</span>
+  <span class="t">&lt;li&gt;</span>Item one<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Item two<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Item three<span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ul&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <ul><li>Item one</li><li>Item two</li><li>Item three</li></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">ol — ordered</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;ol&gt;</span>
+  <span class="t">&lt;li&gt;</span>First step<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Second step<span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Third step<span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ol&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <ol><li>First step</li><li>Second step</li><li>Third step</li></ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">dl — description list</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;dl&gt;</span>
+  <span class="t">&lt;dt&gt;</span>HTML<span class="t">&lt;/dt&gt;</span>
+  <span class="t">&lt;dd&gt;</span>Markup language<span class="t">&lt;/dd&gt;</span>
+  <span class="t">&lt;dt&gt;</span>CSS<span class="t">&lt;/dt&gt;</span>
+  <span class="t">&lt;dd&gt;</span>Styling language<span class="t">&lt;/dd&gt;</span>
+<span class="t">&lt;/dl&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <dl>
+              <dt>HTML</dt><dd>Markup language</dd>
+              <dt>CSS</dt><dd>Styling language</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">nested list</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;ul&gt;</span>
+  <span class="t">&lt;li&gt;</span>Frontend
+    <span class="t">&lt;ul&gt;</span>
+      <span class="t">&lt;li&gt;</span>HTML<span class="t">&lt;/li&gt;</span>
+      <span class="t">&lt;li&gt;</span>CSS<span class="t">&lt;/li&gt;</span>
+    <span class="t">&lt;/ul&gt;</span>
+  <span class="t">&lt;/li&gt;</span>
+  <span class="t">&lt;li&gt;</span>Backend<span class="t">&lt;/li&gt;</span>
+<span class="t">&lt;/ul&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <ul>
+              <li>Frontend<ul><li>HTML</li><li>CSS</li></ul></li>
+              <li>Backend</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: BLOCKQUOTE                                -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="blockquote">
+    <div class="section-title"><span class="dot"></span> Blockquote</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">blockquote</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;blockquote&gt;</span>
+  Simplicity is the ultimate
+  sophistication.
+  <span class="t">&lt;cite&gt;</span>— Leonardo da Vinci<span class="t">&lt;/cite&gt;</span>
+<span class="t">&lt;/blockquote&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <blockquote>Simplicity is the ultimate sophistication. <cite>— Leonardo da Vinci</cite></blockquote>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: CODE & PRE                                -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="code">
+    <div class="section-title"><span class="dot"></span> Code &amp; Pre</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">code inline</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;p&gt;</span>Use <span class="t">&lt;code&gt;</span>console.log()<span class="t">&lt;/code&gt;</span> to debug.<span class="t">&lt;/p&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <p>Use <code>console.log()</code> to debug.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">pre block</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;pre&gt;</span>
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+<span class="t">&lt;/pre&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <pre>function greet(name) {
+  return `Hello, ${name}!`;
+}</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: TABLES                                    -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="table">
+    <div class="section-title"><span class="dot"></span> Tables</div>
+    <div class="card-grid wide">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">full table</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;table&gt;</span>
+  <span class="t">&lt;thead&gt;</span>
+    <span class="t">&lt;tr&gt;</span>
+      <span class="t">&lt;th&gt;</span>Name<span class="t">&lt;/th&gt;</span>
+      <span class="t">&lt;th&gt;</span>Role<span class="t">&lt;/th&gt;</span>
+      <span class="t">&lt;th&gt;</span>Status<span class="t">&lt;/th&gt;</span>
+    <span class="t">&lt;/tr&gt;</span>
+  <span class="t">&lt;/thead&gt;</span>
+  <span class="t">&lt;tbody&gt;</span>
+    <span class="t">&lt;tr&gt;</span>
+      <span class="t">&lt;td&gt;</span>Alice<span class="t">&lt;/td&gt;&lt;td&gt;</span>Designer<span class="t">&lt;/td&gt;&lt;td&gt;</span>Active<span class="t">&lt;/td&gt;</span>
+    <span class="t">&lt;/tr&gt;</span>
+    <span class="t">&lt;tr&gt;</span>
+      <span class="t">&lt;td&gt;</span>Bob<span class="t">&lt;/td&gt;&lt;td&gt;</span>Developer<span class="t">&lt;/td&gt;&lt;td&gt;</span>Away<span class="t">&lt;/td&gt;</span>
+    <span class="t">&lt;/tr&gt;</span>
+  <span class="t">&lt;/tbody&gt;</span>
+<span class="t">&lt;/table&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <table>
+              <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Alice</td><td>Designer</td><td>Active</td></tr>
+                <tr><td>Bob</td><td>Developer</td><td>Away</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">colspan / rowspan</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;table&gt;</span>
+  <span class="t">&lt;tr&gt;</span>
+    <span class="t">&lt;th </span><span class="a">colspan=</span><span class="v">"2"</span><span class="t">&gt;</span>Full Name<span class="t">&lt;/th&gt;</span>
+    <span class="t">&lt;th&gt;</span>Age<span class="t">&lt;/th&gt;</span>
+  <span class="t">&lt;/tr&gt;</span>
+  <span class="t">&lt;tr&gt;</span>
+    <span class="t">&lt;td&gt;</span>John<span class="t">&lt;/td&gt;</span>
+    <span class="t">&lt;td&gt;</span>Doe<span class="t">&lt;/td&gt;</span>
+    <span class="t">&lt;td </span><span class="a">rowspan=</span><span class="v">"2"</span><span class="t">&gt;</span>30<span class="t">&lt;/td&gt;</span>
+  <span class="t">&lt;/tr&gt;</span>
+  <span class="t">&lt;tr&gt;</span>
+    <span class="t">&lt;td&gt;</span>Jane<span class="t">&lt;/td&gt;&lt;td&gt;</span>Smith<span class="t">&lt;/td&gt;</span>
+  <span class="t">&lt;/tr&gt;</span>
+<span class="t">&lt;/table&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <table>
+              <tr><th colspan="2">Full Name</th><th>Age</th></tr>
+              <tr><td>John</td><td>Doe</td><td rowspan="2">30</td></tr>
+              <tr><td>Jane</td><td>Smith</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: HR & DIVIDERS                             -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="hr">
+    <div class="section-title"><span class="dot"></span> Dividers &amp; HR</div>
+    <div class="card-grid">
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">hr</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;p&gt;</span>Above line<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;hr&gt;</span>
+<span class="t">&lt;p&gt;</span>Below line<span class="t">&lt;/p&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <p>Above line</p><hr><p>Below line</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: LAYOUT — SEMANTIC TAGS                    -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="layout-tags">
+    <div class="section-title"><span class="dot"></span> Semantic Tags</div>
+    <div class="card-grid wide">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">page structure</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;header&gt;</span>Site header / logo<span class="t">&lt;/header&gt;</span>
+<span class="t">&lt;nav&gt;</span>Navigation links<span class="t">&lt;/nav&gt;</span>
+<span class="t">&lt;main&gt;</span>
+  <span class="t">&lt;section&gt;</span>A topic section<span class="t">&lt;/section&gt;</span>
+  <span class="t">&lt;article&gt;</span>Self-contained piece<span class="t">&lt;/article&gt;</span>
+  <span class="t">&lt;aside&gt;</span>Sidebar / related<span class="t">&lt;/aside&gt;</span>
+<span class="t">&lt;/main&gt;</span>
+<span class="t">&lt;footer&gt;</span>Site footer<span class="t">&lt;/footer&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result (visual outline)</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:4px;font-family:sans-serif;font-size:12px;">
+            <div style="background:rgba(123,140,222,0.15);border:1px dashed #7b8cde55;border-radius:4px;padding:5px 10px;color:var(--accent2)">header</div>
+            <div style="background:rgba(94,231,183,0.1);border:1px dashed #5ee7b755;border-radius:4px;padding:5px 10px;color:var(--accent)">nav</div>
+            <div style="background:rgba(255,255,255,0.03);border:1px dashed #ffffff22;border-radius:4px;padding:6px 10px;">
+              <div style="color:var(--muted);margin-bottom:4px">main</div>
+              <div style="display:flex;gap:6px">
+                <div style="flex:1;background:rgba(247,178,103,0.1);border:1px dashed #f7b26755;border-radius:4px;padding:5px 8px;color:var(--accent3)">section</div>
+                <div style="flex:1;background:rgba(247,178,103,0.1);border:1px dashed #f7b26755;border-radius:4px;padding:5px 8px;color:var(--accent3)">article</div>
+                <div style="flex:0.6;background:rgba(240,112,112,0.1);border:1px dashed #f0707055;border-radius:4px;padding:5px 8px;color:var(--red)">aside</div>
+              </div>
+            </div>
+            <div style="background:rgba(123,140,222,0.1);border:1px dashed #7b8cde55;border-radius:4px;padding:5px 10px;color:var(--accent2)">footer</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: DIV & SPAN                                -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="div-span">
+    <div class="section-title"><span class="dot"></span> Div &amp; Span</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">div — block container</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"card"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"title"</span><span class="t">&gt;</span>Title<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"body"</span><span class="t">&gt;</span>Content here<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div style="border:1px solid var(--border2);border-radius:6px;overflow:hidden;font-family:sans-serif">
+              <div style="background:var(--bg2);padding:6px 10px;font-weight:bold;font-size:13px;color:var(--text)">Title</div>
+              <div style="padding:6px 10px;font-size:12px;color:var(--muted)">Content here</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">span — inline wrapper</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;p&gt;</span>Price: 
+  <span class="t">&lt;span </span><span class="a">style=</span><span class="v">"color:green"</span><span class="t">&gt;</span>$49<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;/p&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <p>Price: <span style="color:#5ee7b7">$49</span></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: DETAILS / SUMMARY                         -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="details">
+    <div class="section-title"><span class="dot"></span> Details / Summary</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">collapsible</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;details&gt;</span>
+  <span class="t">&lt;summary&gt;</span>Click to expand<span class="t">&lt;/summary&gt;</span>
+  Hidden content revealed!
+<span class="t">&lt;/details&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <details><summary>Click to expand</summary>Hidden content revealed!</details>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: FIGURE                                    -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="figure">
+    <div class="section-title"><span class="dot"></span> Figure</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">figure + figcaption</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;figure&gt;</span>
+  <span class="t">&lt;img </span><span class="a">src=</span><span class="v">"photo.jpg"</span>
+       <span class="a">alt=</span><span class="v">"Sunset"</span><span class="t">&gt;</span>
+  <span class="t">&lt;figcaption&gt;</span>Desert sunset<span class="t">&lt;/figcaption&gt;</span>
+<span class="t">&lt;/figure&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <figure>
+              <div style="width:160px;height:90px;background:linear-gradient(135deg,#f7b267,#f07070,#7b8cde);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px">🌅</div>
+              <figcaption>Desert sunset</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: TEXT INPUTS                               -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="text-inputs">
+    <div class="section-title"><span class="dot"></span> Text Inputs</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">text, email, password</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;label&gt;</span>Name<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"text"</span> <span class="a">placeholder=</span><span class="v">"John"</span><span class="t">&gt;</span>
+
+<span class="t">&lt;label&gt;</span>Email<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"email"</span> <span class="a">placeholder=</span><span class="v">"hi@x.com"</span><span class="t">&gt;</span>
+
+<span class="t">&lt;label&gt;</span>Password<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"password"</span> <span class="a">placeholder=</span><span class="v">"••••"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <label>Name</label>
+            <input type="text" placeholder="John">
+            <label>Email</label>
+            <input type="email" placeholder="hi@x.com">
+            <label>Password</label>
+            <input type="password" placeholder="••••">
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">number, search, url, tel</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;input </span><span class="a">type=</span><span class="v">"number"</span> <span class="a">min=</span><span class="v">"0"</span> <span class="a">max=</span><span class="v">"100"</span><span class="t">&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"search"</span> <span class="a">placeholder=</span><span class="v">"Search…"</span><span class="t">&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"url"</span> <span class="a">placeholder=</span><span class="v">"https://"</span><span class="t">&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"tel"</span> <span class="a">placeholder=</span><span class="v">"+1 555…"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <input type="number" min="0" max="100" placeholder="0–100">
+            <input type="search" placeholder="Search…">
+            <input type="url" placeholder="https://">
+            <input type="tel" placeholder="+1 555…">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: SELECT & DATALIST                         -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="select">
+    <div class="section-title"><span class="dot"></span> Select &amp; Datalist</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">select + optgroup</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;select&gt;</span>
+  <span class="t">&lt;optgroup </span><span class="a">label=</span><span class="v">"Frontend"</span><span class="t">&gt;</span>
+    <span class="t">&lt;option&gt;</span>HTML<span class="t">&lt;/option&gt;</span>
+    <span class="t">&lt;option&gt;</span>CSS<span class="t">&lt;/option&gt;</span>
+  <span class="t">&lt;/optgroup&gt;</span>
+  <span class="t">&lt;optgroup </span><span class="a">label=</span><span class="v">"Backend"</span><span class="t">&gt;</span>
+    <span class="t">&lt;option&gt;</span>Node.js<span class="t">&lt;/option&gt;</span>
+  <span class="t">&lt;/optgroup&gt;</span>
+<span class="t">&lt;/select&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <select>
+              <optgroup label="Frontend"><option>HTML</option><option>CSS</option></optgroup>
+              <optgroup label="Backend"><option>Node.js</option></optgroup>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">datalist — autocomplete</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;input </span><span class="a">list=</span><span class="v">"langs"</span> <span class="a">placeholder=</span><span class="v">"Type…"</span><span class="t">&gt;</span>
+<span class="t">&lt;datalist </span><span class="a">id=</span><span class="v">"langs"</span><span class="t">&gt;</span>
+  <span class="t">&lt;option </span><span class="a">value=</span><span class="v">"Python"</span><span class="t">&gt;</span>
+  <span class="t">&lt;option </span><span class="a">value=</span><span class="v">"JavaScript"</span><span class="t">&gt;</span>
+  <span class="t">&lt;option </span><span class="a">value=</span><span class="v">"Rust"</span><span class="t">&gt;</span>
+<span class="t">&lt;/datalist&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <input list="langs" placeholder="Type a language…">
+            <datalist id="langs">
+              <option value="Python"><option value="JavaScript"><option value="Rust">
+            </datalist>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: CHECKBOX & RADIO                          -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="checkradio">
+    <div class="section-title"><span class="dot"></span> Checkbox &amp; Radio</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">checkbox</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;label&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"checkbox"</span> <span class="a">checked</span><span class="t">&gt;</span>
+  Accept terms
+<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;label&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"checkbox"</span><span class="t">&gt;</span>
+  Newsletter
+<span class="t">&lt;/label&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" checked> Accept terms</label>
+            <label style="display:flex;align-items:center;gap:6px"><input type="checkbox"> Newsletter</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">radio group</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;label&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"radio"</span> <span class="a">name=</span><span class="v">"plan"</span><span class="t">&gt;</span> Free
+<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;label&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"radio"</span> <span class="a">name=</span><span class="v">"plan"</span> <span class="a">checked</span><span class="t">&gt;</span> Pro
+<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;label&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"radio"</span> <span class="a">name=</span><span class="v">"plan"</span><span class="t">&gt;</span> Team
+<span class="t">&lt;/label&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <label style="display:flex;align-items:center;gap:6px"><input type="radio" name="plan1"> Free</label>
+            <label style="display:flex;align-items:center;gap:6px"><input type="radio" name="plan1" checked> Pro</label>
+            <label style="display:flex;align-items:center;gap:6px"><input type="radio" name="plan1"> Team</label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: RANGE, COLOR, FILE                        -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="range-color">
+    <div class="section-title"><span class="dot"></span> Range, Color, File</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">range slider</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;label&gt;</span>Volume<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"range"</span>
+       <span class="a">min=</span><span class="v">"0"</span> <span class="a">max=</span><span class="v">"100"</span> <span class="a">value=</span><span class="v">"60"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <label>Volume</label>
+            <input type="range" min="0" max="100" value="60" style="width:100%">
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">color picker</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;label&gt;</span>Pick color<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"color"</span> <span class="a">value=</span><span class="v">"#5ee7b7"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;align-items:center;gap:10px">
+            <label>Pick color</label>
+            <input type="color" value="#5ee7b7">
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">file upload</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;input </span><span class="a">type=</span><span class="v">"file"</span>
+       <span class="a">accept=</span><span class="v">".jpg,.png"</span>
+       <span class="a">multiple</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <input type="file" accept=".jpg,.png" multiple>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: DATE & TIME                               -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="date-time">
+    <div class="section-title"><span class="dot"></span> Date &amp; Time</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">date, time, datetime-local</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;input </span><span class="a">type=</span><span class="v">"date"</span><span class="t">&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"time"</span><span class="t">&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"datetime-local"</span><span class="t">&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"month"</span><span class="t">&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"week"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <input type="date">
+            <input type="time">
+            <input type="datetime-local">
+            <input type="month">
+            <input type="week">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: TEXTAREA                                  -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="textarea">
+    <div class="section-title"><span class="dot"></span> Textarea</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">textarea</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;label </span><span class="a">for=</span><span class="v">"msg"</span><span class="t">&gt;</span>Message<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;textarea </span><span class="a">id=</span><span class="v">"msg"</span>
+           <span class="a">rows=</span><span class="v">"4"</span>
+           <span class="a">placeholder=</span><span class="v">"Type here…"</span><span class="t">&gt;</span>
+<span class="t">&lt;/textarea&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <label for="msg">Message</label>
+            <textarea id="msg" rows="4" placeholder="Type here…" style="width:100%;resize:vertical"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: FIELDSET & LEGEND                         -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="fieldset">
+    <div class="section-title"><span class="dot"></span> Fieldset &amp; Legend</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">fieldset group</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;fieldset&gt;</span>
+  <span class="t">&lt;legend&gt;</span>Account Info<span class="t">&lt;/legend&gt;</span>
+  <span class="t">&lt;label&gt;</span>Name<span class="t">&lt;/label&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"text"</span><span class="t">&gt;</span>
+  <span class="t">&lt;label&gt;</span>Email<span class="t">&lt;/label&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"email"</span><span class="t">&gt;</span>
+<span class="t">&lt;/fieldset&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <fieldset>
+              <legend>Account Info</legend>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+                <label>Name</label><input type="text">
+                <label>Email</label><input type="email">
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: BUTTONS                                   -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="buttons">
+    <div class="section-title"><span class="dot"></span> Buttons</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">button types</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;button </span><span class="a">type=</span><span class="v">"submit"</span><span class="t">&gt;</span>Submit<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button </span><span class="a">type=</span><span class="v">"reset"</span><span class="t">&gt;</span>Reset<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button </span><span class="a">type=</span><span class="v">"button"</span><span class="t">&gt;</span>Button<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button </span><span class="a">disabled</span><span class="t">&gt;</span>Disabled<span class="t">&lt;/button&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="submit">Submit</button>
+            <button type="reset" style="background:var(--bg3);color:var(--text);border:1px solid var(--border2)">Reset</button>
+            <button type="button" style="background:var(--accent2);color:#fff">Button</button>
+            <button disabled style="opacity:0.4;cursor:not-allowed">Disabled</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">input submit</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;input </span><span class="a">type=</span><span class="v">"submit"</span> <span class="a">value=</span><span class="v">"Send"</span><span class="t">&gt;</span>
+<span class="t">&lt;input </span><span class="a">type=</span><span class="v">"image"</span>
+       <span class="a">src=</span><span class="v">"btn.png"</span>
+       <span class="a">alt=</span><span class="v">"Submit"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;gap:8px">
+            <input type="submit" value="Send">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: PROGRESS & METER                          -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="progress">
+    <div class="section-title"><span class="dot"></span> Progress &amp; Meter</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">progress</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;progress </span><span class="a">value=</span><span class="v">"70"</span> <span class="a">max=</span><span class="v">"100"</span><span class="t">&gt;</span><span class="t">&lt;/progress&gt;</span>
+<span class="t">&lt;progress&gt;</span><span class="t">&lt;/progress&gt;</span> <span class="c">&lt;!-- indeterminate --&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:8px">
+            <progress value="70" max="100" style="width:100%"></progress>
+            <progress style="width:100%"></progress>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">meter — gauge</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;meter </span><span class="a">min=</span><span class="v">"0"</span> <span class="a">max=</span><span class="v">"100"</span>
+       <span class="a">low=</span><span class="v">"30"</span> <span class="a">high=</span><span class="v">"70"</span>
+       <span class="a">value=</span><span class="v">"45"</span><span class="t">&gt;</span>
+<span class="t">&lt;/meter&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <meter min="0" max="100" low="30" high="70" value="45" style="width:100%"></meter>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: IMAGES                                    -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="images">
+    <div class="section-title"><span class="dot"></span> Images</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">img — responsive</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;img </span><span class="a">src=</span><span class="v">"photo.jpg"</span>
+     <span class="a">alt=</span><span class="v">"Description"</span>
+     <span class="a">width=</span><span class="v">"300"</span>
+     <span class="a">loading=</span><span class="v">"lazy"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div style="width:200px;height:120px;background:linear-gradient(135deg,#1a2545,#7b8cde33);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:40px;border:1px solid var(--border)">🖼️</div>
+            <small style="color:var(--muted);font-size:11px;font-family:sans-serif;margin-top:4px;display:block">alt="Description" — always add alt text</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">picture — art direction</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;picture&gt;</span>
+  <span class="t">&lt;source </span><span class="a">srcset=</span><span class="v">"img.avif"</span>
+          <span class="a">type=</span><span class="v">"image/avif"</span><span class="t">&gt;</span>
+  <span class="t">&lt;source </span><span class="a">srcset=</span><span class="v">"img.webp"</span>
+          <span class="a">type=</span><span class="v">"image/webp"</span><span class="t">&gt;</span>
+  <span class="t">&lt;img </span><span class="a">src=</span><span class="v">"img.jpg"</span>
+       <span class="a">alt=</span><span class="v">"Fallback"</span><span class="t">&gt;</span>
+<span class="t">&lt;/picture&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result (concept)</div>
+          <div class="result" style="font-family:sans-serif;font-size:12px;color:var(--muted)">Browser picks best format: avif → webp → jpg fallback</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: AUDIO                                     -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="audio">
+    <div class="section-title"><span class="dot"></span> Audio</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">audio player</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;audio </span><span class="a">controls</span><span class="t">&gt;</span>
+  <span class="t">&lt;source </span><span class="a">src=</span><span class="v">"sound.mp3"</span>
+          <span class="a">type=</span><span class="v">"audio/mpeg"</span><span class="t">&gt;</span>
+  <span class="t">&lt;source </span><span class="a">src=</span><span class="v">"sound.ogg"</span>
+          <span class="a">type=</span><span class="v">"audio/ogg"</span><span class="t">&gt;</span>
+<span class="t">&lt;/audio&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <audio controls style="width:100%">
+              <source src="" type="audio/mpeg">
+              Your browser supports audio element.
+            </audio>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: VIDEO                                     -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="video">
+    <div class="section-title"><span class="dot"></span> Video</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">video player</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;video </span><span class="a">controls</span> <span class="a">width=</span><span class="v">"320"</span>
+       <span class="a">poster=</span><span class="v">"thumb.jpg"</span><span class="t">&gt;</span>
+  <span class="t">&lt;source </span><span class="a">src=</span><span class="v">"clip.mp4"</span>
+          <span class="a">type=</span><span class="v">"video/mp4"</span><span class="t">&gt;</span>
+  <span class="t">&lt;track </span><span class="a">kind=</span><span class="v">"subtitles"</span>
+         <span class="a">src=</span><span class="v">"subs.vtt"</span>
+         <span class="a">srclang=</span><span class="v">"en"</span><span class="t">&gt;</span>
+<span class="t">&lt;/video&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <video controls width="280" style="border-radius:6px;background:#000">
+              <source src="" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: IFRAME                                    -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="iframe">
+    <div class="section-title"><span class="dot"></span> iFrame</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">embed external page</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;iframe</span>
+  <span class="a">src=</span><span class="v">"https://example.com"</span>
+  <span class="a">width=</span><span class="v">"400"</span>
+  <span class="a">height=</span><span class="v">"200"</span>
+  <span class="a">title=</span><span class="v">"Embedded page"</span>
+  <span class="a">loading=</span><span class="v">"lazy"</span><span class="t">&gt;</span>
+<span class="t">&lt;/iframe&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div style="width:100%;height:120px;border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;background:var(--bg2);font-family:sans-serif;font-size:12px;color:var(--muted)">🖼 iframe (blocked here for security)</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: CANVAS                                    -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="canvas">
+    <div class="section-title"><span class="dot"></span> Canvas</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">2D drawing</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;canvas </span><span class="a">id=</span><span class="v">"c"</span> <span class="a">width=</span><span class="v">"200"</span> <span class="a">height=</span><span class="v">"80"</span><span class="t">&gt;&lt;/canvas&gt;</span>
+<span class="t">&lt;script&gt;</span>
+  <span class="s">const</span> ctx = document.getElementById(<span class="v">'c'</span>).getContext(<span class="v">'2d'</span>);
+  ctx.fillStyle = <span class="v">'#5ee7b7'</span>;
+  ctx.fillRect(10, 10, 80, 60);
+  ctx.fillStyle = <span class="v">'#7b8cde'</span>;
+  ctx.beginPath();
+  ctx.arc(160, 40, 30, 0, Math.PI*2);
+  ctx.fill();
+<span class="t">&lt;/script&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <canvas id="demoCanvas" width="200" height="80"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: SVG INLINE                                -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="svg-inline">
+    <div class="section-title"><span class="dot"></span> SVG Inline</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">shapes + text</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;svg </span><span class="a">width=</span><span class="v">"200"</span> <span class="a">height=</span><span class="v">"80"</span><span class="t">&gt;</span>
+  <span class="t">&lt;rect </span><span class="a">x=</span><span class="v">"5"</span> <span class="a">y=</span><span class="v">"5"</span> <span class="a">width=</span><span class="v">"70"</span> <span class="a">height=</span><span class="v">"60"</span>
+        <span class="a">rx=</span><span class="v">"8"</span> <span class="a">fill=</span><span class="v">"#5ee7b7"</span><span class="t">&gt;&lt;/rect&gt;</span>
+  <span class="t">&lt;circle </span><span class="a">cx=</span><span class="v">"120"</span> <span class="a">cy=</span><span class="v">"38"</span> <span class="a">r=</span><span class="v">"28"</span>
+          <span class="a">fill=</span><span class="v">"#7b8cde"</span><span class="t">&gt;&lt;/circle&gt;</span>
+  <span class="t">&lt;text </span><span class="a">x=</span><span class="v">"5"</span> <span class="a">y=</span><span class="v">"75"</span> <span class="a">fill=</span><span class="v">"#f7b267"</span>
+        <span class="a">font-size=</span><span class="v">"11"</span><span class="t">&gt;</span>SVG shapes<span class="t">&lt;/text&gt;</span>
+<span class="t">&lt;/svg&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <svg width="200" height="80">
+              <rect x="5" y="5" width="70" height="60" rx="8" fill="#5ee7b7"></rect>
+              <circle cx="120" cy="38" r="28" fill="#7b8cde"></circle>
+              <text x="5" y="76" fill="#f7b267" font-size="11" font-family="monospace">SVG shapes</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: META TAGS                                 -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="meta">
+    <div class="section-title"><span class="dot"></span> Meta Tags</div>
+    <div class="card-grid wide">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">essential head tags</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;meta </span><span class="a">charset=</span><span class="v">"UTF-8"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta </span><span class="a">name=</span><span class="v">"viewport"</span>
+      <span class="a">content=</span><span class="v">"width=device-width, initial-scale=1"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta </span><span class="a">name=</span><span class="v">"description"</span>
+      <span class="a">content=</span><span class="v">"Page description for SEO"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta </span><span class="a">name=</span><span class="v">"theme-color"</span> <span class="a">content=</span><span class="v">"#0d0f14"</span><span class="t">&gt;</span>
+<span class="t">&lt;link </span><span class="a">rel=</span><span class="v">"canonical"</span> <span class="a">href=</span><span class="v">"https://site.com"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Note</div>
+          <div class="result" style="font-family:sans-serif;font-size:12px;color:var(--muted)">These live inside <code>&lt;head&gt;</code> — not visible but essential for SEO, mobile, and browser behavior.</div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">Open Graph (social sharing)</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;meta </span><span class="a">property=</span><span class="v">"og:title"</span>
+      <span class="a">content=</span><span class="v">"My Page"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta </span><span class="a">property=</span><span class="v">"og:description"</span>
+      <span class="a">content=</span><span class="v">"Description"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta </span><span class="a">property=</span><span class="v">"og:image"</span>
+      <span class="a">content=</span><span class="v">"https://site.com/img.jpg"</span><span class="t">&gt;</span>
+<span class="t">&lt;meta </span><span class="a">property=</span><span class="v">"og:url"</span>
+      <span class="a">content=</span><span class="v">"https://site.com"</span><span class="t">&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Note</div>
+          <div class="result" style="font-family:sans-serif;font-size:12px;color:var(--muted)">Used by Twitter, Facebook, LinkedIn when sharing your link.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: ACCESSIBILITY                             -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="accessibility">
+    <div class="section-title"><span class="dot"></span> Accessibility</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">aria labels</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;button </span><span class="a">aria-label=</span><span class="v">"Close dialog"</span><span class="t">&gt;</span>✕<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;nav </span><span class="a">aria-label=</span><span class="v">"Main navigation"</span><span class="t">&gt;</span>…<span class="t">&lt;/nav&gt;</span>
+<span class="t">&lt;div </span><span class="a">role=</span><span class="v">"alert"</span> <span class="a">aria-live=</span><span class="v">"polite"</span><span class="t">&gt;</span>
+  Saved!
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:8px">
+            <button aria-label="Close dialog" style="width:32px;height:32px;border-radius:50%">✕</button>
+            <div role="alert" aria-live="polite" style="font-family:sans-serif;font-size:12px;color:var(--accent);background:rgba(94,231,183,0.1);border:1px solid rgba(94,231,183,0.3);padding:6px 10px;border-radius:5px">✓ Saved!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">label for= pairing</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="c">&lt;!-- Correct: linked by id --&gt;</span>
+<span class="t">&lt;label </span><span class="a">for=</span><span class="v">"username"</span><span class="t">&gt;</span>Username<span class="t">&lt;/label&gt;</span>
+<span class="t">&lt;input </span><span class="a">id=</span><span class="v">"username"</span> <span class="a">type=</span><span class="v">"text"</span><span class="t">&gt;</span>
+
+<span class="c">&lt;!-- Also correct: wrapped --&gt;</span>
+<span class="t">&lt;label&gt;</span>
+  Email
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"email"</span><span class="t">&gt;</span>
+<span class="t">&lt;/label&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <label for="username">Username</label>
+            <input id="username" type="text">
+            <label style="display:flex;flex-direction:column;gap:4px">Email <input type="email"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">skip nav + tabindex</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;a </span><span class="a">href=</span><span class="v">"#main"</span> <span class="a">class=</span><span class="v">"skip-link"</span><span class="t">&gt;</span>
+  Skip to main content
+<span class="t">&lt;/a&gt;</span>
+
+<span class="t">&lt;div </span><span class="a">tabindex=</span><span class="v">"0"</span><span class="t">&gt;</span>Focusable div<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div </span><span class="a">tabindex=</span><span class="v">"-1"</span><span class="t">&gt;</span>Programmatic only<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:6px">
+            <a href="#main" style="background:var(--accent);color:#0d0f14;padding:4px 10px;border-radius:5px;font-size:12px;font-family:sans-serif">Skip to main content</a>
+            <div tabindex="0" style="font-family:sans-serif;font-size:12px;border:1px solid var(--border);border-radius:4px;padding:5px 10px;cursor:pointer;color:var(--text)">Focusable div (Tab key)</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: DATA ATTRIBUTES                           -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="data-attrs">
+    <div class="section-title"><span class="dot"></span> Data Attributes</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">data-* custom attributes</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;button</span>
+  <span class="a">data-user-id=</span><span class="v">"42"</span>
+  <span class="a">data-action=</span><span class="v">"delete"</span>
+  <span class="a">onclick=</span><span class="v">"handle(this)"</span><span class="t">&gt;</span>
+  Delete
+<span class="t">&lt;/button&gt;</span>
+
+<span class="t">&lt;script&gt;</span>
+  <span class="s">function</span> handle(el) {
+    <span class="s">const</span> id = el.dataset.userId;
+    console.log(<span class="v">'User:'</span>, id);
+  }
+<span class="t">&lt;/script&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <button data-user-id="42" data-action="delete" onclick="alert('User ID: ' + this.dataset.userId)" style="background:var(--red);color:#fff">Delete (click me)</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: TEMPLATE                                  -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="template">
+    <div class="section-title"><span class="dot"></span> Template</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">reusable HTML template</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;template </span><span class="a">id=</span><span class="v">"card-tpl"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"card"</span><span class="t">&gt;</span>
+    <span class="t">&lt;h3&gt;</span>Title<span class="t">&lt;/h3&gt;</span>
+    <span class="t">&lt;p&gt;</span>Body<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/template&gt;</span>
+
+<span class="t">&lt;div </span><span class="a">id=</span><span class="v">"output"</span><span class="t">&gt;&lt;/div&gt;</span>
+<span class="t">&lt;button </span><span class="a">onclick=</span><span class="v">"cloneIt()"</span><span class="t">&gt;</span>Add Card<span class="t">&lt;/button&gt;</span>
+
+<span class="t">&lt;script&gt;</span>
+  <span class="s">function</span> cloneIt() {
+    <span class="s">const</span> t = document.getElementById(<span class="v">'card-tpl'</span>);
+    document.getElementById(<span class="v">'output'</span>)
+      .appendChild(t.content.cloneNode(<span class="s">true</span>));
+  }
+<span class="t">&lt;/script&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <template id="card-tpl">
+              <div style="border:1px solid var(--border);border-radius:6px;padding:8px;margin-top:6px;font-family:sans-serif;font-size:12px;color:var(--text)"><strong>Title</strong><p style="color:var(--muted);margin-top:3px">Body</p></div>
+            </template>
+            <div id="tpl-output"></div>
+            <button onclick="document.getElementById('tpl-output').appendChild(document.getElementById('card-tpl').content.cloneNode(true))">Add Card</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- SECTION: DIALOG                                    -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="dialog">
+    <div class="section-title"><span class="dot"></span> Dialog</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">native modal dialog</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;dialog </span><span class="a">id=</span><span class="v">"modal"</span><span class="t">&gt;</span>
+  <span class="t">&lt;h2&gt;</span>Are you sure?<span class="t">&lt;/h2&gt;</span>
+  <span class="t">&lt;p&gt;</span>This cannot be undone.<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;button </span><span class="a">onclick=</span><span class="v">"modal.close()"</span><span class="t">&gt;</span>
+    Close
+  <span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;/dialog&gt;</span>
+<span class="t">&lt;button </span><span class="a">onclick=</span><span class="v">"modal.showModal()"</span><span class="t">&gt;</span>
+  Open Dialog
+<span class="t">&lt;/button&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <dialog id="demoModal" style="background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:10px;padding:20px;font-family:sans-serif;min-width:200px">
+              <h2 style="color:var(--text);font-family:var(--sans);font-size:16px;margin-bottom:8px">Are you sure?</h2>
+              <p style="color:var(--muted);font-size:13px;margin-bottom:14px">This cannot be undone.</p>
+              <button onclick="document.getElementById('demoModal').close()">Close</button>
+            </dialog>
+            <button onclick="document.getElementById('demoModal').showModal()">Open Dialog</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ╔══════════════════════════════════════════════════╗
+       ║         UI COMPONENTS SECTION                   ║
+       ╚══════════════════════════════════════════════════╝ -->
+
+  <div style="margin:48px 0 32px;padding:20px 24px;background:linear-gradient(135deg,rgba(94,231,183,0.06),rgba(123,140,222,0.06));border:1px solid var(--border2);border-radius:12px;display:flex;align-items:center;gap:12px">
+    <div style="font-size:24px">🎨</div>
+    <div>
+      <div style="font-family:var(--sans);font-weight:800;font-size:16px;color:var(--text)">UI Components</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px">Launcher-style components — copy the CSS + HTML patterns</div>
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: BUTTONS                                        -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-buttons">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Buttons</div>
+    <div class="card-grid wide">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">button variants</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-primary"</span><span class="t">&gt;</span>Primary<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-secondary"</span><span class="t">&gt;</span>Secondary<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-danger"</span><span class="t">&gt;</span>Danger<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-ghost"</span><span class="t">&gt;</span>Ghost<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-primary btn-sm"</span><span class="t">&gt;</span>Small<span class="t">&lt;/button&gt;</span>
+<span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-primary btn-lg"</span><span class="t">&gt;</span>Large<span class="t">&lt;/button&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-danger">Danger</button>
+            <button class="btn btn-ghost">Ghost</button>
+            <button class="btn btn-primary btn-sm">Small</button>
+            <button class="btn btn-primary btn-lg">Large</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: INPUTS                                         -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-inputs">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Input Fields</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">labeled input + icon</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"field"</span><span class="t">&gt;</span>
+  <span class="t">&lt;label </span><span class="a">class=</span><span class="v">"field-label"</span><span class="t">&gt;</span>Email<span class="t">&lt;/label&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"email"</span>
+         <span class="a">class=</span><span class="v">"field-input"</span>
+         <span class="a">placeholder=</span><span class="v">"name@company.com"</span><span class="t">&gt;</span>
+  <span class="t">&lt;span </span><span class="a">class=</span><span class="v">"field-hint"</span><span class="t">&gt;</span>We won't spam you.<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:4px">
+            <label style="font-size:11px;font-weight:600;color:var(--text);letter-spacing:0.04em;font-family:sans-serif">Email</label>
+            <input type="email" placeholder="name@company.com" style="width:100%">
+            <span style="font-size:11px;color:var(--muted);font-family:sans-serif">We won't spam you.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">search bar</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"search-bar"</span><span class="t">&gt;</span>
+  <span class="t">&lt;span&gt;</span>🔍<span class="t">&lt;/span&gt;</span>
+  <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"search"</span>
+         <span class="a">placeholder=</span><span class="v">"Search anything…"</span><span class="t">&gt;</span>
+  <span class="t">&lt;kbd&gt;</span>⌘K<span class="t">&lt;/kbd&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div style="display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;">
+              <span style="opacity:0.5">🔍</span>
+              <input type="search" placeholder="Search anything…" style="border:none;background:none;flex:1;font-family:var(--mono);font-size:12px;color:var(--text)">
+              <kbd>⌘K</kbd>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: CARDS                                          -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-cards">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Cards</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">content card</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"card"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"card-img"</span><span class="t">&gt;</span>🚀<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"card-body"</span><span class="t">&gt;</span>
+    <span class="t">&lt;p </span><span class="a">class=</span><span class="v">"card-title"</span><span class="t">&gt;</span>Launch Day<span class="t">&lt;/p&gt;</span>
+    <span class="t">&lt;p </span><span class="a">class=</span><span class="v">"card-text"</span><span class="t">&gt;</span>Ship fast and iterate.<span class="t">&lt;/p&gt;</span>
+    <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"card-footer"</span><span class="t">&gt;</span>
+      <span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-primary btn-sm"</span><span class="t">&gt;</span>Launch<span class="t">&lt;/button&gt;</span>
+      <span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-secondary btn-sm"</span><span class="t">&gt;</span>Defer<span class="t">&lt;/button&gt;</span>
+    <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div class="demo-card">
+              <div class="card-img">🚀</div>
+              <div class="card-body">
+                <div class="card-title">Launch Day</div>
+                <div class="card-text">Ship fast and iterate on real feedback.</div>
+                <div class="card-footer">
+                  <button class="btn btn-primary btn-sm">Launch</button>
+                  <button class="btn btn-secondary btn-sm">Defer</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">horizontal card</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"h-card"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"avatar"</span><span class="t">&gt;</span>AL<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div&gt;</span>
+    <span class="t">&lt;strong&gt;</span>Alice Lee<span class="t">&lt;/strong&gt;</span>
+    <span class="t">&lt;p&gt;</span>Product Designer<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;span </span><span class="a">class=</span><span class="v">"badge badge-green"</span><span class="t">&gt;</span>Active<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+              <div class="avatar" style="background:linear-gradient(135deg,#5ee7b7,#7b8cde);color:#0d0f14">AL</div>
+              <div style="flex:1;font-family:sans-serif">
+                <strong style="color:var(--text);font-size:13px">Alice Lee</strong>
+                <p style="color:var(--muted);font-size:11px;margin-top:2px">Product Designer</p>
+              </div>
+              <span class="badge badge-green">Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: ALERTS                                         -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-alerts">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Alerts</div>
+    <div class="card-grid wide">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">alert variants</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"alert alert-info"</span><span class="t">&gt;</span>
+  ℹ️ New update available.
+<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div </span><span class="a">class=</span><span class="v">"alert alert-success"</span><span class="t">&gt;</span>
+  ✓ Saved successfully.
+<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div </span><span class="a">class=</span><span class="v">"alert alert-warn"</span><span class="t">&gt;</span>
+  ⚠ Storage almost full.
+<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;div </span><span class="a">class=</span><span class="v">"alert alert-error"</span><span class="t">&gt;</span>
+  ✕ Connection failed.
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div class="alert alert-info">ℹ️ New update available.</div>
+            <div class="alert alert-success">✓ Saved successfully.</div>
+            <div class="alert alert-warn">⚠ Storage almost full.</div>
+            <div class="alert alert-error">✕ Connection failed.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: BADGES & AVATARS                               -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-badges">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Badges &amp; Avatars</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">badges</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;span </span><span class="a">class=</span><span class="v">"badge badge-green"</span><span class="t">&gt;</span>Active<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span </span><span class="a">class=</span><span class="v">"badge badge-blue"</span><span class="t">&gt;</span>Beta<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span </span><span class="a">class=</span><span class="v">"badge badge-orange"</span><span class="t">&gt;</span>Pending<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;span </span><span class="a">class=</span><span class="v">"badge badge-red"</span><span class="t">&gt;</span>Error<span class="t">&lt;/span&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span class="badge badge-green">Active</span>
+            <span class="badge badge-blue">Beta</span>
+            <span class="badge badge-orange">Pending</span>
+            <span class="badge badge-red">Error</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">avatar group</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"avatar-group"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"avatar"</span> <span class="a">title=</span><span class="v">"Alice"</span><span class="t">&gt;</span>AL<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"avatar"</span> <span class="a">title=</span><span class="v">"Bob"</span><span class="t">&gt;</span>BO<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"avatar"</span> <span class="a">title=</span><span class="v">"Carol"</span><span class="t">&gt;</span>CA<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"avatar"</span><span class="t">&gt;</span>+3<span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div class="avatar-group">
+              <div class="avatar" title="Alice" style="background:linear-gradient(135deg,#5ee7b7,#3db896);color:#0d0f14">AL</div>
+              <div class="avatar" title="Bob" style="background:linear-gradient(135deg,#7b8cde,#5a6abf);color:#fff">BO</div>
+              <div class="avatar" title="Carol" style="background:linear-gradient(135deg,#f7b267,#e0923a);color:#0d0f14">CA</div>
+              <div class="avatar" style="background:var(--bg3);color:var(--muted);font-size:11px">+3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: NAVIGATION BAR                                 -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-nav">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Navigation Bar</div>
+    <div class="card-grid full">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">top nav bar</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;nav </span><span class="a">class=</span><span class="v">"demo-nav"</span><span class="t">&gt;</span>
+  <span class="t">&lt;span </span><span class="a">class=</span><span class="v">"brand"</span><span class="t">&gt;</span>Acme<span class="t">&lt;/span&gt;</span>
+  <span class="t">&lt;a </span><span class="a">href=</span><span class="v">"#"</span> <span class="a">class=</span><span class="v">"active"</span><span class="t">&gt;</span>Home<span class="t">&lt;/a&gt;</span>
+  <span class="t">&lt;a </span><span class="a">href=</span><span class="v">"#"</span><span class="t">&gt;</span>Docs<span class="t">&lt;/a&gt;</span>
+  <span class="t">&lt;a </span><span class="a">href=</span><span class="v">"#"</span><span class="t">&gt;</span>Pricing<span class="t">&lt;/a&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"spacer"</span><span class="t">&gt;&lt;/div&gt;</span>
+  <span class="t">&lt;a </span><span class="a">href=</span><span class="v">"#"</span> <span class="a">class=</span><span class="v">"cta"</span><span class="t">&gt;</span>Sign up<span class="t">&lt;/a&gt;</span>
+<span class="t">&lt;/nav&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <nav class="demo-nav">
+              <span class="brand">Acme</span>
+              <a href="#" class="active">Home</a>
+              <a href="#">Docs</a>
+              <a href="#">Pricing</a>
+              <div class="spacer"></div>
+              <a href="#" class="cta">Sign up</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: PANELS                                         -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-panel">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Panels</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">panel with header/footer</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"demo-panel"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"panel-header"</span><span class="t">&gt;</span>
+    <span class="t">&lt;span </span><span class="a">class=</span><span class="v">"panel-title"</span><span class="t">&gt;</span>Settings<span class="t">&lt;/span&gt;</span>
+    <span class="t">&lt;span </span><span class="a">class=</span><span class="v">"badge badge-blue"</span><span class="t">&gt;</span>Beta<span class="t">&lt;/span&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"panel-body"</span><span class="t">&gt;</span>
+    Configure your preferences here.
+  <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"panel-footer"</span><span class="t">&gt;</span>
+    <span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-primary btn-sm"</span><span class="t">&gt;</span>Save<span class="t">&lt;/button&gt;</span>
+    <span class="t">&lt;button </span><span class="a">class=</span><span class="v">"btn btn-secondary btn-sm"</span><span class="t">&gt;</span>Cancel<span class="t">&lt;/button&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div class="demo-panel">
+              <div class="panel-header">
+                <span class="panel-title">Settings</span>
+                <span class="badge badge-blue">Beta</span>
+              </div>
+              <div class="panel-body" style="font-family:sans-serif;font-size:13px;color:var(--muted)">Configure your preferences here.</div>
+              <div class="panel-footer">
+                <button class="btn btn-primary btn-sm">Save</button>
+                <button class="btn btn-secondary btn-sm">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: TABS                                           -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-tabs">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Tabs</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">tab component</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"tabs"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"tab-bar"</span><span class="t">&gt;</span>
+    <span class="t">&lt;button </span><span class="a">class=</span><span class="v">"active"</span><span class="t">&gt;</span>Overview<span class="t">&lt;/button&gt;</span>
+    <span class="t">&lt;button&gt;</span>Activity<span class="t">&lt;/button&gt;</span>
+    <span class="t">&lt;button&gt;</span>Settings<span class="t">&lt;/button&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"tab-content"</span><span class="t">&gt;</span>
+    Overview tab content here.
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result">
+            <div class="tabs">
+              <div class="tab-bar">
+                <button class="active" onclick="switchTab(this, 'Overview tab content here.')">Overview</button>
+                <button onclick="switchTab(this, 'Activity log goes here.')">Activity</button>
+                <button onclick="switchTab(this, 'Settings panel goes here.')">Settings</button>
+              </div>
+              <div class="tab-content" id="tabContent">Overview tab content here.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: PROGRESS BARS                                  -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-progress">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Progress Bars</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">labeled progress bars</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"progress-wrap"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"progress-label"</span><span class="t">&gt;</span>
+    <span class="t">&lt;span&gt;</span>HTML<span class="t">&lt;/span&gt;</span>
+    <span class="t">&lt;span&gt;</span>90%<span class="t">&lt;/span&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"progress-bar"</span><span class="t">&gt;</span>
+    <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"fill"</span>
+         <span class="a">style=</span><span class="v">"width:90%;background:#5ee7b7"</span><span class="t">&gt;</span>
+    <span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:10px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;font-family:sans-serif;color:var(--muted);margin-bottom:4px"><span>HTML</span><span>90%</span></div>
+              <div class="progress-bar"><div class="fill" style="width:90%;background:var(--accent)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;font-family:sans-serif;color:var(--muted);margin-bottom:4px"><span>CSS</span><span>75%</span></div>
+              <div class="progress-bar"><div class="fill" style="width:75%;background:var(--accent2)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;font-family:sans-serif;color:var(--muted);margin-bottom:4px"><span>JavaScript</span><span>60%</span></div>
+              <div class="progress-bar"><div class="fill" style="width:60%;background:var(--accent3)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: TOGGLES                                        -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-toggle">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Toggles</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">CSS toggle switch</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;label </span><span class="a">class=</span><span class="v">"toggle-wrap"</span><span class="t">&gt;</span>
+  <span class="t">&lt;span </span><span class="a">class=</span><span class="v">"toggle"</span><span class="t">&gt;</span>
+    <span class="t">&lt;input </span><span class="a">type=</span><span class="v">"checkbox"</span> <span class="a">checked</span><span class="t">&gt;</span>
+    <span class="t">&lt;span </span><span class="a">class=</span><span class="v">"toggle-track"</span><span class="t">&gt;&lt;/span&gt;</span>
+  <span class="t">&lt;/span&gt;</span>
+  Dark mode
+<span class="t">&lt;/label&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:flex;flex-direction:column;gap:10px">
+            <label class="toggle-wrap"><span class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></span>Dark mode</label>
+            <label class="toggle-wrap"><span class="toggle"><input type="checkbox"><span class="toggle-track"></span></span>Notifications</label>
+            <label class="toggle-wrap"><span class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></span>Auto-save</label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────────────────────── -->
+  <!-- UI: STAT CARDS                                     -->
+  <!-- ────────────────────────────────────────────────── -->
+  <div class="section" id="ui-stats">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> UI — Stat Cards</div>
+    <div class="card-grid">
+
+      <div class="snippet">
+        <div class="snippet-header">
+          <span class="snippet-label">metric card</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="snippet-code"><pre><span class="t">&lt;div </span><span class="a">class=</span><span class="v">"stat-card"</span><span class="t">&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"stat-label"</span><span class="t">&gt;</span>Monthly Revenue<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"stat-value"</span><span class="t">&gt;</span>$48,200<span class="t">&lt;/div&gt;</span>
+  <span class="t">&lt;div </span><span class="a">class=</span><span class="v">"stat-change up"</span><span class="t">&gt;</span>
+    ↑ 12.4% vs last month
+  <span class="t">&lt;/div&gt;</span>
+<span class="t">&lt;/div&gt;</span></pre></div>
+        <div class="snippet-result">
+          <div class="result-label">Result</div>
+          <div class="result" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="stat-card">
+              <div class="stat-label">Monthly Revenue</div>
+              <div class="stat-value">$48,200</div>
+              <div class="stat-change up">↑ 12.4% vs last month</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Active Users</div>
+              <div class="stat-value">2,841</div>
+              <div class="stat-change down">↓ 3.1% vs last month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* ── COPY BUTTON ──────────────────────────────────── */
+function copyCode(btn) {
+  const pre = btn.closest('.snippet').querySelector('.snippet-code pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'copy';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+
+/* ── NAV FILTER ───────────────────────────────────── */
+function filterNav(q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('#navGroups .nav-group a').forEach(a => {
+    const match = a.textContent.toLowerCase().includes(q);
+    a.style.display = match ? '' : 'none';
+  });
+  document.querySelectorAll('#navGroups .nav-group').forEach(g => {
+    const visible = [...g.querySelectorAll('a')].some(a => a.style.display !== 'none');
+    g.style.display = visible ? '' : 'none';
+  });
+}
+
+/* ── ACTIVE NAV LINK (scroll spy) ────────────────── */
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('#sidebar a');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const id = e.target.id;
+      const match = document.querySelector(`#sidebar a[href="#${id}"]`);
+      if (match) match.classList.add('active');
+    }
+  });
+}, { threshold: 0.3, rootMargin: '-60px 0px -40% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+/* ── CANVAS DEMO ──────────────────────────────────── */
+const c = document.getElementById('demoCanvas');
+if (c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#5ee7b7';
+  ctx.fillRect(10, 10, 80, 60);
+  ctx.fillStyle = '#7b8cde';
+  ctx.beginPath();
+  ctx.arc(160, 40, 30, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#f7b267';
+  ctx.fillRect(90, 25, 40, 30);
+}
+
+/* ── TABS DEMO ────────────────────────────────────── */
+function switchTab(btn, content) {
+  btn.closest('.tab-bar').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tabContent').textContent = content;
+}
+</script>
+</body>
 </html>
